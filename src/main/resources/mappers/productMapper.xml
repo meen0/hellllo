@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spoons.sehaehae.product.dao.ProductMapper">
+
+
+
+    <resultMap id="productResultMap" type="com.spoons.sehaehae.product.dto.ProductDTO">
+        <id property="code" column="PRODUCT_CODE"/>
+        <result property="name" column="PRODUCT_NAME"/>
+        <result property="price" column="PRODUCT_PRICE"/>
+        <result property="premiumPrice" column="PRODUCT_PREMIUM_PRICE"/>
+        <result property="useableStatus" column="USEABLE_STATUS"/>
+        <result property="ecoPrice" column="PRODUCT_ECO_PRICE"/>
+        <result property="registDate" column="REGIST_DATE"/>
+        <result property="modifyDate" column="MODIFY_DATE"/>
+        <result property="deleteDate" column="DELETE_DATE"/>
+        <result property="deleteStatus" column="DELETE_STATUS"/>
+        <result property="photo" column="PRODUCT_PHOTO"/>
+        <association property="category" resultMap="categoryResultMap"/>
+    </resultMap>
+
+    <resultMap id="categoryResultMap" type="com.spoons.sehaehae.product.dto.CategoryDTO">
+        <id column="CATEGORY_CODE" property="code"/>
+        <result column="CATEGORY_NAME" property="name"/>
+    </resultMap>
+
+    <resultMap id="cartResultMap" type="com.spoons.sehaehae.product.dto.CartDTO">
+        <id column="MEMBER_NO" property="member1"/>
+        <id column="CART_AMOUNT" property="amount1"/>
+        <id column="USE_ECO" property="useEco1"/>
+        <id column="USE_PREMIUM" property="usePremium1"/>
+        <association resultMap="productResultMap" property="productCode1"/>
+    </resultMap>
+
+
+    <insert id="registCategory" parameterType="string">
+        INSERT INTO
+        TBL_CATEGORY
+        (CATEGORY_CODE, CATEGORY_NAME)
+        VALUES
+        (SEQ_PRODUCT_CATEGORY_NO.nextval,#{categoryName})
+    </insert>
+
+    <insert id="registProduct">
+        INSERT INTO
+        TBL_PRODUCT
+        (PRODUCT_CODE,PRODUCT_NAME,CATEGORY_CODE,PRODUCT_PRICE,PRODUCT_PREMIUM_PRICE,USEABLE_STATUS,REGIST_DATE,PRODUCT_PHOTO)
+        VALUES
+        (SEQ_PRODUCT_NO.NEXTVAL,#{name},#{category.code},#{price},#{premiumPrice},#{useableStatus},#{registDate},#{photo})
+    </insert>
+
+
+    <select id="selectProduct" resultMap="productResultMap">
+        SELECT
+        A.PRODUCT_NAME,
+        A.PRODUCT_CODE,
+        B.CATEGORY_NAME,
+        A.PRODUCT_PRICE,
+        A.PRODUCT_PREMIUM_PRICE,
+        A.PRODUCT_ECO_PRICE,
+        A.PRODUCT_PHOTO
+        FROM TBL_PRODUCT A
+        JOIN TBL_CATEGORY B ON(A.CATEGORY_CODE = B.CATEGORY_CODE)
+        WHERE USEABLE_STATUS = 'Y'
+    </select>
+
+    <select id="selectCategory" resultMap="categoryResultMap">
+        SELECT
+        *
+        FROM TBL_CATEGORY
+    </select>
+
+    <select id="selectProductByCode" resultMap="productResultMap">
+        SELECT
+        *
+        FROM TBL_PRODUCT
+        WHERE PRODUCT_CODE = #{code}
+    </select>
+    <insert id="addCart" parameterType="com.spoons.sehaehae.product.dto.CartDTO">
+        INSERT INTO TBL_CART
+        (CART_AMOUNT, PRODUCT_CODE, MEMBER_NO,USE_ECO,USE_PREMIUM)
+        VALUES
+        (#{cart.amount1},#{cart.productCode1},#{cart.member1},#{cart.useEco1},#{cart.usePremium1})
+    </insert>
+
+<!--    <select id="cartList" resultMap="cartResultMap">-->
+<!--        SELECT-->
+<!--        A.PRODUCT_CODE,-->
+<!--        A.CART_AMOUNT,-->
+<!--        A.USE_ECO,-->
+<!--        A.USE_PREMIUM,-->
+<!--        B.PRODUCT_NAME,-->
+<!--        B.PRODUCT_PRICE,-->
+<!--        B.PRODUCT_PREMIUM_PRICE,-->
+<!--        B.PRODUCT_ECO_PRICE,-->
+<!--        B.PRODUCT_PHOTO,-->
+<!--        B.REGIST_DATE,-->
+<!--        B.MODIFY_DATE,-->
+<!--        B.DELETE_DATE,-->
+<!--        B.USEABLE_STATUS,-->
+<!--        B.DELETE_STATUS-->
+<!--        FROM TBL_CART A-->
+<!--        JOIN TBL_PRODUCT B ON (A.PRODUCT_CODE = B.PRODUCT_CODE)-->
+<!--        WHERE MEMBER_NO=#{i}-->
+<!--    </select>-->
+</mapper>

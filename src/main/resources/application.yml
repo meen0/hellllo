@@ -1,0 +1,24 @@
+#DB config
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: C##SPOONS
+    password: SPOONS
+
+  # file upload config
+servlet:
+  multipart:
+    max-file-size: 1000000000000000000000MB
+    max-request-size: 100000000000000000000MB
+    location: C:/lecture/spoons-sehaehae-feature-11-product
+
+# Mybatis config
+mybatis:
+  mapper-locations: mappers/**/*.xml
+
+# image upload dir
+image:
+  image-dir: C:/lecture/spoons-sehaehae-feature-11-product/src/main/resources/upload/
+
+

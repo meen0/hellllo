@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/cart.css" rel="stylesheet" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+<header style="background-color: blue;">헤더</header>
+
+
+<div class="container1">
+    <p style="font-size: 40px; font-weight: bold;">장바구니</p>
+    <p>가격표</p>
+</div>
+<div style="background:#EFEFEF; padding-top: 10px; margin-top: 20px; padding-bottom: 200px">
+    <div class="container2">
+        <input type="checkbox" value="c" class="dd" onclick="selectAll(this)">
+        <button type="button" id="selectAll">전체선택</button>
+        <button type="button" class="delete">선택삭제</button>
+    </div>
+
+    <th:block th:each="cart : ${cartList}">
+        <div class="container3">
+            <input type="checkbox" class="product">
+            <img th:src="${cart.productCode1.photo}">
+            <div>
+                <p th:text="${cart.productCode1.name}"></p>
+                <span th:if="${cart.useEco1 == 'Y'}">천연세제 사용</span><br>
+                <span th:if="${cart.usePremium1 == 'Y'}">프리미엄 케어</span>
+                <div class="gg">
+                    <input type="number" class="zz" value="1"><select>
+                    <option selected>옵션선택</option>
+                    <option>천연세제 사용</option>
+                    <option>프리미엄케어</option>
+                </select><span style="margin-left: 120px; font-size: 30px; font-weight: bold;" id="totalPrice">2100원</span>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <div class="total">
+        <span>총 결제금액</span>
+        <span>12,000원</span>
+        <span>+</span>
+        <span>배송비 3,000원</span>
+        <span>= 15,000원</span>
+        <button class="order">주문/결제</button>
+    </div>
+</div>
+
+
+<script>
+    const $box = document.querySelector(".dd"); //전체체크박스
+    const $product = document.querySelectorAll(".product"); //
+    const $prbt = document.querySelector("#selectAll");
+    $prbt.addEventListener("click", function () {
+        $box.checked = 'true';
+        selectAll($box);
+    })
+    function selectAll(selectAll) {
+        $product.forEach((box) => {
+            box.checked = selectAll.checked;
+        });
+    }
+    const $delete = document.querySelector(".delete");
+    const $div = document.querySelectorAll(".container3");
+    const $checkbox = document.querySelectorAll('.product');
+    console.log($div);
+    console.log($delete);
+    console.log($checkbox);
+    $delete.addEventListener("click", function () {
+        $checkbox.forEach((box) => {
+            if (box.checked) {
+                box.parentElement.remove();
+            }
+        });
+        // for(var i = 0; $checkbox.length; i++){
+        //     if($checkbox[i].checked){
+        //         $checkbox[i].parentElement.remove();
+        //     }
+        // }
+    })
+
+    const $value = document.querySelectorAll(".zz");
+    const $total = document.querySelectorAll("#totalPrice");
+    console.log($value);
+    console.log($total);
+
+    $value.forEach((list)=> list.addEventListener("change",function(){
+        const index = Array.from($value).indexOf(this);
+        const body = list.value;
+        const price = 3000;
+        console.log([[${price}]]);
+
+        let ecoPrice = 0
+        let premiumPrice = 0
+        fetch('/product/getPrice?price=' + price + '&body=' + body + "&eco=" + ecoPrice + "&premium=" + premiumPrice)
+            .then(res => res.json())
+            .then(data => $total[index].textContent = data + "원")
+            .catch(error => console.log(error))
+    }))
+
+
+</script>
+</body>
+</html>
