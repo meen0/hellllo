@@ -47,26 +47,20 @@
 
         <div class="imgcontainer">
             <div th:each=" product : ${productList}" th:onclick="|location.href='/product/detail?code=${product.code}'|">
-                <img class="images" src="/upload/thumbnail/hello.png">
+                <img class="images" th:src="${product.photo}" width="140px">
                 <div class="product">
-                    <p th:text="${product.code}"></p>
                     <p th:text="${product.name}"/>
-                    <p th:text="${product.price}+'원'"/>
+                    <p th:text="${#numbers.formatInteger(product.price,3,'COMMA')}+'원'"/>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-
-
 </div>
-
 <script>
     const $subbar = document.querySelectorAll(".subproduct");
     const $menu = document.querySelectorAll(".menu");
     var subToggle = [true, true, true, true, true, true, true];
-
     $menu.forEach((menu) => {
         menu.addEventListener("click", function () {
             const index = Array.from($menu).indexOf(this);

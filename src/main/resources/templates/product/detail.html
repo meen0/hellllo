@@ -16,13 +16,13 @@
         <img th:src="${product.photo}">
         <div class="info">
             <p th:text="${product.name}" style="font-size: 30px;"></p>
-            <p th:text="${product.price}+'원'" style="font-size: 20px; margin-top: -30px;"></p>
+            <p th:text="${#numbers.formatInteger(product.price,3,'COMMA')}+'원'" style="font-size: 20px; margin-top: -30px;"></p>
             <input type="checkbox" class="ecoCheckbox" value="useEco"><span class="cb">천연세제 사용</span>
             <br>
             <input type="checkbox" class="premiumCheckbox" value="use"><span class="cb">프리미엄케어</span>
             <br>
             <input type="number" id="input1" value="1">
-            <span style="margin-left: 70px; font-size:30px;" id="totalPrice" th:text="${product.price+'원'}"></span>
+            <span style="margin-left: 70px; font-size:30px;" id="totalPrice" th:text="${#numbers.formatInteger(product.price,3,'COMMA')+'원'}"></span>
             <br>
             <div class="button1">
                 <button class="bt" id="cart">장바구니</button>
@@ -69,9 +69,10 @@
             }
             fetch('/product/getPrice?price=' + price + '&body=' + body + "&eco=" + ecoPrice + "&premium=" + premiumPrice)
                 .then(res => res.json())
-                .then(data => $totalPrice.textContent = data + "원")
+                .then(data => $totalPrice.textContent = data.toLocaleString('ko-KR') + "원")
                 .catch(error => console.log(error))
         }
+
         const $cart = document.querySelector("#cart")
         let useEco = '';
         let usePremium = '';
@@ -88,8 +89,8 @@
             }else{
                 usePremium = 'N';
             }
-            const productCode = `[[${product.code}]]`
-            fetch("/product/addCart?productCode="+productCode+"&amount="+$inputNumber.value+"&useEco="+useEco+"&usePremium="+usePremium)
+            const product = '[[${product.code}]]'
+            fetch("/product/addCart?product.code="+product+"&amount="+$inputNumber.value+"&useEco="+useEco+"&usePremium="+usePremium)
                 .then(res=>res.text())
                 .then(res=>alert(res))
                 .catch(error=>console.log(error))

@@ -27,11 +27,18 @@
     </resultMap>
 
     <resultMap id="cartResultMap" type="com.spoons.sehaehae.product.dto.CartDTO">
-        <id column="MEMBER_NO" property="member1"/>
-        <id column="CART_AMOUNT" property="amount1"/>
-        <id column="USE_ECO" property="useEco1"/>
-        <id column="USE_PREMIUM" property="usePremium1"/>
-        <association resultMap="productResultMap" property="productCode1"/>
+        <id column="MEMBER_NO" property="member"/>
+        <result column="CART_AMOUNT" property="amount"/>
+        <result column="USE_ECO" property="useEco"/>
+        <result column="USE_PREMIUM" property="usePremium"/>
+        <association resultMap="productResultMap" property="product"/>
+    </resultMap>
+    <resultMap id="memberResultMap" type="com.spoons.sehaehae.member.dto.MemberDTO">
+        <id column="MEMBER_NO" property="no"/>
+        <result column="NAME" property="name"/>
+        <result column="PHONE_NUMBER" property="phone"/>
+        <result column="ADDRESS" property="address"/>
+        <result column="MY_POINT" property="point"/>
     </resultMap>
 
 
@@ -70,6 +77,7 @@
         SELECT
         *
         FROM TBL_CATEGORY
+        ORDER BY CATEGORY_CODE
     </select>
 
     <select id="selectProductByCode" resultMap="productResultMap">
@@ -82,27 +90,37 @@
         INSERT INTO TBL_CART
         (CART_AMOUNT, PRODUCT_CODE, MEMBER_NO,USE_ECO,USE_PREMIUM)
         VALUES
-        (#{cart.amount1},#{cart.productCode1},#{cart.member1},#{cart.useEco1},#{cart.usePremium1})
+        (#{amount},#{product.code},#{member},#{useEco},#{usePremium})
     </insert>
 
-<!--    <select id="cartList" resultMap="cartResultMap">-->
-<!--        SELECT-->
-<!--        A.PRODUCT_CODE,-->
-<!--        A.CART_AMOUNT,-->
-<!--        A.USE_ECO,-->
-<!--        A.USE_PREMIUM,-->
-<!--        B.PRODUCT_NAME,-->
-<!--        B.PRODUCT_PRICE,-->
-<!--        B.PRODUCT_PREMIUM_PRICE,-->
-<!--        B.PRODUCT_ECO_PRICE,-->
-<!--        B.PRODUCT_PHOTO,-->
-<!--        B.REGIST_DATE,-->
-<!--        B.MODIFY_DATE,-->
-<!--        B.DELETE_DATE,-->
-<!--        B.USEABLE_STATUS,-->
-<!--        B.DELETE_STATUS-->
-<!--        FROM TBL_CART A-->
-<!--        JOIN TBL_PRODUCT B ON (A.PRODUCT_CODE = B.PRODUCT_CODE)-->
-<!--        WHERE MEMBER_NO=#{i}-->
-<!--    </select>-->
+    <select id="cartList" resultMap="cartResultMap">
+        SELECT
+        B.PRODUCT_CODE,
+        B.PRODUCT_NAME,
+        B.PRODUCT_PRICE,
+        B.PRODUCT_PREMIUM_PRICE,
+        B.PRODUCT_PHOTO,
+        A.CART_AMOUNT,
+        A.USE_PREMIUM,
+        A.USE_ECO
+        FROM TBL_CART A
+        JOIN TBL_PRODUCT B ON (A.PRODUCT_CODE = B.PRODUCT_CODE)
+        WHERE A.MEMBER_NO = #{i}
+    </select>
+
+    <select id="selectMember" resultMap="memberResultMap">
+        SELECT
+        MEMBER_NO,
+        NAME,
+        PHONE_NUMBER,
+        ADDRESS,
+        MY_POINT
+        FROM TBL_MEMBER
+        WHERE MEMBER_NO = #{memberCode}
+    </select>
+
+    <update id="updateCartList">
+        UPDATE TBL_CART
+
+    </update>
 </mapper>

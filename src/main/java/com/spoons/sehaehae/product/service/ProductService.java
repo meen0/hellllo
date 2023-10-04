@@ -1,5 +1,6 @@
 package com.spoons.sehaehae.product.service;
 
+import com.spoons.sehaehae.member.dto.MemberDTO;
 import com.spoons.sehaehae.product.dao.ProductMapper;
 import com.spoons.sehaehae.product.dto.CartDTO;
 import com.spoons.sehaehae.product.dto.CategoryDTO;
@@ -47,5 +48,15 @@ public class ProductService {
 
     public List<CartDTO> cartList(int i) {
         return  productMapper.cartList(i);
+    }
+
+    public MemberDTO selectMember(int memberCode) {
+
+        return productMapper.selectMember(memberCode);
+    }
+
+    public void updateCartList(int body) {
+
+        productMapper.updateCartList(body);
     }
 }

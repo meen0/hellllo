@@ -1,5 +1,6 @@
 package com.spoons.sehaehae.product.controller;
 
+import com.spoons.sehaehae.member.dto.MemberDTO;
 import com.spoons.sehaehae.product.dto.CartDTO;
 import com.spoons.sehaehae.product.dto.CategoryDTO;
 import com.spoons.sehaehae.product.dto.ProductDTO;
@@ -63,7 +64,11 @@ public class ProductController {
         model.addAttribute("price",3000);
     }
     @GetMapping("/payment")
-    public void payemnt() {
+    public void payemnt(Model model) {
+        int memberCode = 1;
+       MemberDTO member = productService.selectMember(memberCode);
+        System.out.println(member);
+        model.addAttribute("member",member);
     }
     @GetMapping("/categoryRegist")
     public void categoryRegist() {
@@ -80,7 +85,7 @@ public class ProductController {
     public String productRegist(@ModelAttribute ProductDTO product, @RequestParam(value = "productImage", required = false) MultipartFile productImage) {
         product.setRegistDate(new Date());
         String originalName = productImage.getOriginalFilename();
-        String fileUploadDir = IMG_DIR + "thumbnail";
+        String fileUploadDir = IMG_DIR + "resource/images";
         File dir = new File(fileUploadDir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -88,7 +93,7 @@ public class ProductController {
         try {
             if (productImage.getSize() > 0) {
                 productImage.transferTo(new File(fileUploadDir +"/"+ originalName));
-                product.setPhoto("/upload/thumbnail/"+originalName);
+                product.setPhoto("/resource/images/"+originalName);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -100,25 +105,58 @@ public class ProductController {
     public ResponseEntity<Integer> getPrice(@RequestParam(required = false) int price, @RequestParam(required = false) int body,int eco, int premium){
         System.out.println(price);
         System.out.println(body);
+
+//
+//        productService.updateCartList(body);
+
+
+
         int total = (price * body)+eco+premium;
         return ResponseEntity.ok(total);
     }
 
     @GetMapping("/addCart")
     public ResponseEntity<String> addCart(@ModelAttribute CartDTO cart){
-        cart.setMember1(1);
+        cart.setMember(1);
         System.out.println("==========================");
-        System.out.println(cart.getProductCode1());
-        System.out.println(cart.getAmount1());
-        System.out.println(cart.getMember1());
-        System.out.println(cart.getUseEco1());
-        System.out.println(cart.getUsePremium1());
-
-
+        System.out.println(cart.getProduct());
+        System.out.println(cart.getAmount());
+        System.out.println(cart.getMember());
+        System.out.println(cart.getUseEco());
+        System.out.println(cart.getUsePremium());
         System.out.println(cart);
 
-//        productService.addCart(cart);
+        productService.addCart(cart);
 
         return ResponseEntity.ok("장바구니에 추가됨");
     }
+    @GetMapping("/totalPrice")
+    public ResponseEntity<Integer> totalPrice(int totalPrice){
+
+        return ResponseEntity.ok(totalPrice);
+    }
+    @GetMapping("/admin")
+    public void admin(){}
+
+    @GetMapping("/cartList")
+    public void cartList(Model model){
+        int a = 1;
+        List<CartDTO> list = productService.cartList(a);
+        int totalPrice = 0;
+        for(int i=0 ; list.size()>i; i++){
+            totalPrice += list.get(i).getProduct().getPrice();
+        }
+        System.out.println(totalPrice);
+        model.addAttribute("cartList",list);
+        model.addAttribute("totalPrice",totalPrice);
+    }
+
+    @GetMapping("/selectAllCategory")
+    public ResponseEntity<List<CategoryDTO>> selectCategory(){
+        List<CategoryDTO> categoryList = productService.selectCategory();
+        System.out.println(categoryList);
+        return  ResponseEntity.ok(categoryList);
+    }
+
+
 }

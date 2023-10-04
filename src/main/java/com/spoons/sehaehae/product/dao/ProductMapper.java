@@ -1,5 +1,6 @@
 package com.spoons.sehaehae.product.dao;
 
+import com.spoons.sehaehae.member.dto.MemberDTO;
 import com.spoons.sehaehae.product.dto.CartDTO;
 import com.spoons.sehaehae.product.dto.CategoryDTO;
 import com.spoons.sehaehae.product.dto.ProductDTO;
@@ -23,4 +24,8 @@ public interface ProductMapper {
     void addCart(CartDTO cart);
 
     List<CartDTO> cartList(int i);
+
+    MemberDTO selectMember(int memberCode);
+
+    void updateCartList(int body);
 }
