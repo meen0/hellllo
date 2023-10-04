@@ -121,6 +121,7 @@
 
     <update id="updateCartList">
         UPDATE TBL_CART
-
+        SET CART_AMOUNT = #{body}
+        WHERE PRODUCT_CODE = 10
     </update>
 </mapper>

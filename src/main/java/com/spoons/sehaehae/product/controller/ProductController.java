@@ -105,12 +105,7 @@ public class ProductController {
     public ResponseEntity<Integer> getPrice(@RequestParam(required = false) int price, @RequestParam(required = false) int body,int eco, int premium){
         System.out.println(price);
         System.out.println(body);
-
-//
-//        productService.updateCartList(body);
-
-
-
+        productService.updateCartList(body);
         int total = (price * body)+eco+premium;
         return ResponseEntity.ok(total);
     }
@@ -143,9 +138,11 @@ public class ProductController {
         int a = 1;
         List<CartDTO> list = productService.cartList(a);
         int totalPrice = 0;
+
         for(int i=0 ; list.size()>i; i++){
             totalPrice += list.get(i).getProduct().getPrice();
         }
+
         System.out.println(totalPrice);
         model.addAttribute("cartList",list);
         model.addAttribute("totalPrice",totalPrice);
@@ -156,6 +153,14 @@ public class ProductController {
         List<CategoryDTO> categoryList = productService.selectCategory();
         System.out.println(categoryList);
         return  ResponseEntity.ok(categoryList);
+    }
+
+    @GetMapping("/updateCart")
+    public ResponseEntity<String> updateCart(int body){
+        System.out.println("호출됨");
+
+        productService.updateCartList(body);
+        return null;
     }
 
 

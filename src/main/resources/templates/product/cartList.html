@@ -88,12 +88,10 @@
     const $total = document.querySelectorAll("#totalPrice");
     const $final = document.querySelector("#final");
     const $final2= document.querySelector('#final2') ;
-    console.log($total[0].value);
     $value.forEach((list) => list.addEventListener("change", function () {
         const index = Array.from($value).indexOf(this);
         const body = list.value;
-        console.log(body);
-        const price = '[[${cartList[2].product.price}]]';
+        const price = '[[${cartList[0].product.price}]]';
         console.log(price);
         let ecoPrice = 0
         let premiumPrice = 0
@@ -103,12 +101,13 @@
             .catch(error => console.log(error));
         let totalPrice = 0;
         $total.forEach((price)=>totalPrice += Number(price.textContent));
-        console.log(totalPrice);
         fetch('/product/totalPrice?totalPrice='+ totalPrice)
             .then(res => res.json())
             .then(data => {$final.textContent=(data).toLocaleString('ko-KR')+"원";
                 $final2.textContent= "="+(data+3000).toLocaleString('ko-KR')+"원"; })
             .catch(error=>console.log(error));
+
+        fetch("/product/updateCart?body="+body)
     }))
 
 

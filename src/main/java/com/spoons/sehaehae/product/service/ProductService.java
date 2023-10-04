@@ -56,7 +56,6 @@ public class ProductService {
     }
 
     public void updateCartList(int body) {
-
         productMapper.updateCartList(body);
     }
 }
